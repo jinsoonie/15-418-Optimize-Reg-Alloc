@@ -41,35 +41,35 @@ Preliminarily we have several ideas on how this algorithm can be parallelized. A
 ##### Parallelization on MCS
 While MCS is inherently sequential, there are several things that we could do to “parallelize” the algorithm.
 
-When we update the cardinality of each neighbor, we can perform all updates in parallel. On very large graphs, this could prove to be very helpful.
+* When we update the cardinality of each neighbor, we can perform all updates in parallel. On very large graphs, this could prove to be very helpful.
 
-When selecting the next vertex for MCS we could search through all vertices in parallel using atomic operations here to search with vertex with the largest weight.
+* When selecting the next vertex for MCS we could search through all vertices in parallel using atomic operations here to search with vertex with the largest weight.
 
 ##### Parallelization on Greedy Coloring
 Our greedy coloring algorithm is a little different from the typical k-coloring problem as we generate an ordering to color our nodes with MCS. There are still ways we can parallelize.
 
-Perform speculative coloring in parallel and then resolve coloring conflicts afterwards.
+* Perform speculative coloring in parallel and then resolve coloring conflicts afterwards.
 
-Within a sequential speculative coloring algorithm, we could parallelize the color speculation where we get the lowest viable color for each vertex.
+* Within a sequential speculative coloring algorithm, we could parallelize the color speculation where we get the lowest viable color for each vertex.
 
-Separate our graph into independent sets and operate on these sets in parallel.
+* Separate our graph into independent sets and operate on these sets in parallel.
 
 ### Challenges
 There are several interesting challenges associated with our project.
 
-Contention when parallelizing MCS
-When we search for vertices with the largest weight while parallelizing MCS, if multiple threads want to update at the same time, it could cause contention issues. May have to use locks.
+###### Contention when parallelizing MCS
+* When we search for vertices with the largest weight while parallelizing MCS, if multiple threads want to update at the same time, it could cause contention issues. May have to use locks.
 
-Color conflict resolution
-When we color our graph in parallel, the color of a vertex depends on the color of its neighbors. When colors don’t update quick enough in our shared memory, it could cause coloring conflicts which will then have to be resolved afterwards.
+###### Color conflict resolution
+* When we color our graph in parallel, the color of a vertex depends on the color of its neighbors. When colors don’t update quick enough in our shared memory, it could cause coloring conflicts which will then have to be resolved afterwards.
 
-Interference Graph Generation
-In our discussion with prof. Mowry, he told us that we will have to craft our own interference graphs rather than get interference graphs from compilers. This is because it is difficult to write programs that will give us large enough graphs for us to see the effect of parallelism.
+###### Interference Graph Generation
+* In our discussion with prof. Mowry, he told us that we will have to craft our own interference graphs rather than get interference graphs from compilers. This is because it is difficult to write programs that will give us large enough graphs for us to see the effect of parallelism.
 
 
 #### Resources
-Type of Computers
-We expect to use the GHC machines as well as the PSC Bridges-2 machines, similar to assignment 3 & 4. This is because we will try to perform parallelization using OpenMP, and this is a CPU intensive process that presents considerable potential for analysis when performed across multiple different cores. As compiling is generally done by the CPU, we believe that using OpenMP would demonstrate accurate real life potential for improvements.
+###### Type of Computers
+* We expect to use the GHC machines as well as the PSC Bridges-2 machines, similar to assignment 3 & 4. This is because we will try to perform parallelization using OpenMP, and this is a CPU intensive process that presents considerable potential for analysis when performed across multiple different cores. As compiling is generally done by the CPU, we believe that using OpenMP would demonstrate accurate real life potential for improvements.
 
 #### Starting Point
 We will begin from scratch, starting off by implementing a sequential implementation of the register allocation algorithm. Then, we can perform the parallelization as outlined in the challenges above. Source to consult for register allocation: https://www.cs.cmu.edu/~janh/courses/411/24/lectures/03-regalloc.pdf 
