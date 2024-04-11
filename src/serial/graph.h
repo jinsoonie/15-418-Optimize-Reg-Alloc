@@ -16,7 +16,7 @@ public:
     InterferenceGraph(int nodes, int edges);
     void generateGraph();
     void printGraph() const;
-    void outputGraph(const char* filename) const;
+    std::vector<int> maximumCardinalitySearch() const;
 
 private:
     int numNodes;

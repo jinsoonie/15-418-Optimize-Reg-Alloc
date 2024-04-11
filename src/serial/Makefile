@@ -4,7 +4,7 @@ CXXFLAGS=-Wall -g -std=c++17
 
 MAIN=serial
 
-SRCS=color.cpp graph.cpp main.cpp mcs.cpp
+SRCS=graph.cpp main.cpp
 
 HEADERS=color.h graph.h mcs.h
 

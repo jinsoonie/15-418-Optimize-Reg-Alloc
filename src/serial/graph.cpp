@@ -29,7 +29,7 @@ void InterferenceGraph::generateGraph() {
         int v = rand() % numNodes;
 
         // check if the edge already exists
-        bool found = (edgesSet.find({u, v}) != edgesSet.end());
+        bool found = (edgesSet.find({u, v}) != edgesSet.end()) || (edgesSet.find({v, u}) != edgesSet.end());
         if (u != v && !found) {
             edgesSet.insert({u, v});
         }
@@ -45,16 +45,12 @@ void InterferenceGraph::printGraph() const {
     }
 }
 
-void InterferenceGraph::outputGraph(const char* filename) const {
-    FILE* file = fopen(filename, "w");
-    if (file == nullptr) {
-        std::cerr << "Error opening file " << filename << std::endl;
-        return;
-    }
-    fprintf(file, "%d %d\n", numNodes, numEdges);
+std::vector<int> InterferenceGraph::maximumCardinalitySearch() const {
+    std::vector<int> ordering(numNodes, 0);
+    std::vector<int> weights(numNodes, 0);
+    std::vector<bool> removed(numNodes, false);
 
-    for (const auto& edge : adjacencyList) {
-        fprintf(file, "%d %d\n", edge.first, edge.second);
-    }
-    fclose(file);
+    /* TODO: Implement MCS */
+    return ordering;
 }
+
