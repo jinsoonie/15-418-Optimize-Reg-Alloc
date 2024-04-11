@@ -20,7 +20,7 @@ InterferenceGraph::InterferenceGraph(int nodes, int edges) : numNodes(nodes), nu
 
 void InterferenceGraph::generateGraph() {
     // initialize an edgeset
-    std::set<std::pair<int, int>> edgesSet;
+    std::set<std::pair<int, int> > edgesSet;
 
     // check we don't have specified number of edges
     while(edgesSet.size() < static_cast<size_t>(numEdges)) {
@@ -29,7 +29,7 @@ void InterferenceGraph::generateGraph() {
         int v = rand() % numNodes;
 
         // check if the edge already exists
-        bool found = edgesSet.find({u, v}) != edgesSet.end() || edgesSet.find({v, u}) != edgesSet.end();
+        bool found = (edgesSet.find({u, v}) != edgesSet.end());
         if (u != v && !found) {
             edgesSet.insert({u, v});
         }

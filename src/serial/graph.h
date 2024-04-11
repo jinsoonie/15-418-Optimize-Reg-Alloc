@@ -21,7 +21,7 @@ public:
 private:
     int numNodes;
     int numEdges;
-    std::vector<std::pair<int, int>> adjacencyList;
+    std::vector< std::pair<int, int> > adjacencyList;
 };
 
 #endif
