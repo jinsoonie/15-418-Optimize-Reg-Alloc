@@ -17,11 +17,16 @@ public:
     void generateGraph();
     void printGraph() const;
     std::vector<int> maximumCardinalitySearch() const;
+    // ADDED
+    bool verifyColoring() const;
+    int countUniqueColors() const;
 
 private:
     int numNodes;
     int numEdges;
-    std::vector< std::pair<int, int> > adjacencyList;
+    // ADDED
+    std::vector< std::pair<int, int> > allEdges; // Vector to store edges as pairs
+    std::vector<int> nodeColors;                 // Colors assigned to each node
 };
 
 #endif

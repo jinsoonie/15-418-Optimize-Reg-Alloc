@@ -13,7 +13,8 @@
 #include <set>
 #include <algorithm>
 
-InterferenceGraph::InterferenceGraph(int nodes, int edges) : numNodes(nodes), numEdges(edges) {
+// added nodeColors to InterferenceGraph
+InterferenceGraph::InterferenceGraph(int nodes, int edges) : numNodes(nodes), numEdges(edges), nodeColors(nodes, -1) {
     // generate a random seed
     srand(static_cast<unsigned int>(time(nullptr)));
 }
@@ -23,24 +24,24 @@ void InterferenceGraph::generateGraph() {
     std::set<std::pair<int, int> > edgesSet;
 
     // check we don't have specified number of edges
-    while(edgesSet.size() < static_cast<size_t>(numEdges)) {
+    while (edgesSet.size() < static_cast<size_t>(numEdges)) {
         // generate random nodes
         int u = rand() % numNodes;
         int v = rand() % numNodes;
 
         // check if the edge already exists
-        bool found = (edgesSet.find({u, v}) != edgesSet.end()) || (edgesSet.find({v, u}) != edgesSet.end());
+        bool found = (edgesSet.find({ u, v }) != edgesSet.end()) || (edgesSet.find({ v, u }) != edgesSet.end());
         if (u != v && !found) {
-            edgesSet.insert({u, v});
+            edgesSet.insert({ u, v });
         }
     }
 
-    adjacencyList.assign(edgesSet.begin(), edgesSet.end());
+    allEdges.assign(edgesSet.begin(), edgesSet.end());
 }
 
 void InterferenceGraph::printGraph() const {
     std::cout << "Interference Graph" << std::endl;
-    for (const auto& edge : adjacencyList) {
+    for (const auto& edge : allEdges) {
         std::cout << "Edge from Node " << edge.first << " to Node " << edge.second << std::endl;
     }
 }
@@ -54,3 +55,35 @@ std::vector<int> InterferenceGraph::maximumCardinalitySearch() const {
     return ordering;
 }
 
+// ADDED verifyColoring (check that graph coloring is indeed valid)
+bool InterferenceGraph::verifyColoring() const {
+    // First check if all nodes are colored
+    for (int color : nodeColors) {
+        if (color == -1) {
+            std::cout << "Coloring error: Not all nodes are colored. Found default val -1 color" << std::endl;
+            return false;
+        }
+    }
+
+    // Check for any coloring errors between adjacent nodes
+    for (const auto& edge : allEdges) {
+        int u = edge.first;
+        int v = edge.second;
+        if (nodeColors[u] == nodeColors[v]) {
+            std::cout << "Coloring error: Node " << u << " and Node " << v << " have the same color " << nodeColors[u] << std::endl;
+            return false;
+        }
+    }
+    return true;
+}
+
+// ADDED count # of colors used in graph, use a set bc unique colors
+int InterferenceGraph::countUniqueColors() const {
+    std::set<int> uniqueColors;
+    for (int color : nodeColors) {
+        if (color != -1) { // Assuming -1 means uncolored
+            uniqueColors.insert(color);
+        }
+    }
+    return uniqueColors.size();
+}

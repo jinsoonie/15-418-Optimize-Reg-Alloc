@@ -85,7 +85,15 @@ int main(int argc, char* argv[]) {
     }
     std::cout << i << std::endl; */
 
-    std::cout << "Elapsed time: " << programTimer.elapsed() << " seconds" << std::endl;
+    std::cout << "Elapsed time: " << programTimer.elapsed() << " seconds\n";
+
+    std::cout << "Colors used: " << graph.countUniqueColors() << " colors\n";
+
+    // verify graph is colored correctly 
+    if (!graph.verifyColoring()) {
+        std::cout << "Incorrect: Graph was not colored correctly!\n";
+        return 1;
+    }
     /** END ADDED **/
 
     // Now we want to do MCS on the graph
