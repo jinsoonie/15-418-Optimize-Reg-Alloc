@@ -1,6 +1,6 @@
 // 15.418 Final Project: Parallel MCS and Graph Coloring
 // Graph Generator Header File
-// Author: Kevin Huang <ykhuang@andrew.cmu.edu>
+// Author: Kevin Huang <ykhuang@andrew.cmu.edu>, Rex Kim <rexk@andrew.cmu.edu>
 
 // This file contains the class definition for the Interference Graph Generator
 
@@ -20,8 +20,11 @@ public:
     // ADDED
     bool verifyColoring() const;
     int countUniqueColors() const;
+    virtual void greedyColoring();  // virtual bc will be overridden by children
+    virtual ~InterferenceGraph() {} // virtual destructor or else undef behavior when children access
 
-private:
+    // changed to protected so children classes can access and change nodeColors
+protected:
     int numNodes;
     int numEdges;
     // ADDED

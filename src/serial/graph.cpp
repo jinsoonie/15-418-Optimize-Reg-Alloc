@@ -1,6 +1,6 @@
 // 15.418 Final Project: Parallel MCS and Graph Coloring
 // Graph Generator
-// Author: Kevin Huang <ykhuang@andrew.cmu.edu>
+// Author: Kevin Huang <ykhuang@andrew.cmu.edu>, Rex Kim <rexk@andrew.cmu.edu>
 
 // This file contains the implementation of the Interference Graph Generator
 // The purpose of this generator is to generate graphs that we'll feed into
@@ -86,4 +86,9 @@ int InterferenceGraph::countUniqueColors() const {
         }
     }
     return uniqueColors.size();
+}
+
+// ADDED: GreedyColoring for graph class (each child class will have its own version overwrite this)
+void InterferenceGraph::greedyColoring() {
+    std::cout << "From greedyColoring(): Default greedyColoring for InterferenceGraph should do nothing\n";
 }

@@ -1,6 +1,6 @@
 // 15.418 Final Project: Parallel MCS and Graph Coloring
 // Graph Generator
-// Author: Kevin Huang <ykhuang@andrew.cmu.edu>
+// Author: Kevin Huang <ykhuang@andrew.cmu.edu>, Rex Kim <rexk@andrew.cmu.edu>
 
 // This file contains the implementation of the main driver code 
 // for the MCS and Graph Coloring algorithms.
@@ -12,6 +12,8 @@
 
 #include "../timer.h"
 #include <cstring>
+#include "sequential.cpp"
+#include <memory>
 
 
 int main(int argc, char* argv[]) {
@@ -66,17 +68,36 @@ int main(int argc, char* argv[]) {
         std::cerr << "Invalid arguments. The number of edges must be less than or equal to numNodes * (numNodes - 1)" << std::endl;
         return 1;
     }
-    // Generate the graph
-    InterferenceGraph graph(numNodes, numEdges);
-    graph.generateGraph();
-    graph.printGraph();
 
     /** BEGIN ADDED **/
+    // Generate the graph ACCORDING to which mode selected
+    // InterferenceGraph graph(numNodes, numEdges);
+
+    std::unique_ptr<InterferenceGraph> graph;
+
+    if (mode == "Sequential") {
+        graph = std::make_unique<seqColorGraph>(numNodes, numEdges);
+    }
+    else if (mode == "OpenMP") {
+        // WIP
+    }
+    else if (mode == "OpenMPI") {
+        // WIP
+    }
+    else {
+        graph = std::make_unique<InterferenceGraph>(numNodes, numEdges);
+        std::cout << "Error no mode specified, defaulting to InterferenceGraph that does not have any coloring" << std::endl;
+    }
+    // graph.printGraph();
+    graph->generateGraph();
+
     // TIMER instantiation - use this to do timing of program
     Timer programTimer;
     programTimer.reset();
 
     // run the program here...
+    graph->greedyColoring();  // Apply greedy coloring
+
 
     /* dummy program to test timer
     long long i;
@@ -87,13 +108,14 @@ int main(int argc, char* argv[]) {
 
     std::cout << "Elapsed time: " << programTimer.elapsed() << " seconds\n";
 
-    std::cout << "Colors used: " << graph.countUniqueColors() << " colors\n";
+    std::cout << "Colors used: " << graph->countUniqueColors() << " colors\n";
 
     // verify graph is colored correctly 
-    if (!graph.verifyColoring()) {
+    if (!graph->verifyColoring()) {
         std::cout << "Incorrect: Graph was not colored correctly!\n";
         return 1;
     }
+
     /** END ADDED **/
 
     // Now we want to do MCS on the graph
