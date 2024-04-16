@@ -10,13 +10,47 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "../timer.h"
+#include <cstring>
 
-int main(int argc, char *argv[]) {
+
+int main(int argc, char* argv[]) {
     // Check for correct number of args
-    if (argc != 3){
-        std::cerr << "Usage: " << argv[0] << " <numNodes> <numEdges>" << std::endl;
+    if (argc != 4) {
+        std::cerr << "Usage: " << argv[0] << " <numNodes> <numEdges> -[desired mode]" << std::endl;
         return 1;
     }
+
+    /** BEGIN ADDED **/
+    std::string mode = "none"; // Default mode when no flags are set
+    int modeCount = 0; // Counter to track the number of mode flags set
+
+    // Iterate over all arguments provided (starting from 1 to skip program name)
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "-seq") == 0) {
+            mode = "Sequential";
+            modeCount++;
+        }
+        else if (strcmp(argv[i], "-openmp") == 0) {
+            mode = "OpenMP";
+            modeCount++;
+        }
+        else if (strcmp(argv[i], "-openmpi") == 0) {
+            mode = "OpenMPI";
+            modeCount++;
+        }
+
+        // Check if more than one mode has been set
+        if (modeCount > 1) {
+            std::cerr << "Error: Multiple execution modes specified." << std::endl;
+            return 1;
+        }
+    }
+
+    // Output the active mode if only one is set, otherwise output none
+    std::cout << "Active execution mode: " << (modeCount == 1 ? mode : "none") << std::endl;
+
+    /** END ADDED **/
 
     // Check for valid arguments
     if (std::atoi(argv[1]) <= 0 || std::atoi(argv[2]) <= 0) {
@@ -28,15 +62,32 @@ int main(int argc, char *argv[]) {
     int numNodes = std::atoi(argv[1]); // Example: 10 nodes
     int numEdges = std::atoi(argv[2]); // Example: 15 edges
 
-    if (numEdges > (numNodes - 1)*numNodes) {
+    if (numEdges > (numNodes - 1) * numNodes) {
         std::cerr << "Invalid arguments. The number of edges must be less than or equal to numNodes * (numNodes - 1)" << std::endl;
         return 1;
     }
     // Generate the graph
     InterferenceGraph graph(numNodes, numEdges);
     graph.generateGraph();
-    // graph.printGraph();
-    
+    graph.printGraph();
+
+    /** BEGIN ADDED **/
+    // TIMER instantiation - use this to do timing of program
+    Timer programTimer;
+    programTimer.reset();
+
+    // run the program here...
+
+    /* dummy program to test timer
+    long long i;
+    for (i = 0; i < 100000000; i++) {
+        int x = i * i;
+    }
+    std::cout << i << std::endl; */
+
+    std::cout << "Elapsed time: " << programTimer.elapsed() << " seconds" << std::endl;
+    /** END ADDED **/
+
     // Now we want to do MCS on the graph
 
 
