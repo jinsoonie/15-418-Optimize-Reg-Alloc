@@ -14,11 +14,12 @@
 #include <algorithm>
 
 // added nodeColors to InterferenceGraph
-InterferenceGraph::InterferenceGraph(int nodes, int edges) : numNodes(nodes), numEdges(edges), nodeColors(nodes, -1) {
+InterferenceGraph::InterferenceGraph(int nodes, int edges) : numNodes(nodes), numEdges(edges), nodeColors(nodes, -1), adjList(nodes) {
     // generate a random seed
     srand(static_cast<unsigned int>(time(nullptr)));
 }
 
+// --WARNING--: This takes A LONG TIME TO RUN when there are a lot of edges! run once and beware
 void InterferenceGraph::generateGraph() {
     // initialize an edgeset
     std::set<std::pair<int, int> > edgesSet;
@@ -33,13 +34,17 @@ void InterferenceGraph::generateGraph() {
         bool found = (edgesSet.find({ u, v }) != edgesSet.end()) || (edgesSet.find({ v, u }) != edgesSet.end());
         if (u != v && !found) {
             edgesSet.insert({ u, v });
+
+            // generate adjacency list using allEdges
+            adjList[u].push_back(v);
+            adjList[v].push_back(u);
         }
     }
 
     allEdges.assign(edgesSet.begin(), edgesSet.end());
 }
 
-void InterferenceGraph::printGraph() const {
+void InterferenceGraph::printGraph() {
     std::cout << "Interference Graph" << std::endl;
     for (const auto& edge : allEdges) {
         std::cout << "Edge from Node " << edge.first << " to Node " << edge.second << std::endl;
@@ -66,14 +71,23 @@ bool InterferenceGraph::verifyColoring() const {
     }
 
     // Check for any coloring errors between adjacent nodes
-    for (const auto& edge : allEdges) {
+    /* for (const auto& edge : allEdges) {
         int u = edge.first;
         int v = edge.second;
         if (nodeColors[u] == nodeColors[v]) {
             std::cout << "Coloring error: Node " << u << " and Node " << v << " have the same color " << nodeColors[u] << std::endl;
             return false;
         }
+    } */
+    for (int currentNode = 0; currentNode < numNodes; currentNode++) {
+        for (int neighbor : adjList[currentNode]) {
+            if (nodeColors[neighbor] == nodeColors[currentNode]) {
+                std::cout << "Coloring error: Node " << currentNode << " and Node " << neighbor << " have the same color " << nodeColors[currentNode] << std::endl;
+                return false;
+            }
+        }
     }
+
     return true;
 }
 

@@ -15,7 +15,7 @@ class InterferenceGraph {
 public:
     InterferenceGraph(int nodes, int edges);
     void generateGraph();
-    void printGraph() const;
+    void printGraph();
     std::vector<int> maximumCardinalitySearch() const;
     // ADDED
     bool verifyColoring() const;
@@ -30,6 +30,8 @@ protected:
     // ADDED
     std::vector< std::pair<int, int> > allEdges; // Vector to store edges as pairs
     std::vector<int> nodeColors;                 // Colors assigned to each node
+    std::vector<std::vector<int>> adjList;
+
 };
 
 #endif

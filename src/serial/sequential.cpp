@@ -20,14 +20,10 @@ public:
             std::set<int> usedColors;
 
             // Find all colors used by adjacent vertices (neighborhood N(v))
-            // THIS IS CAUSING SO MUCH SLOWNESS 
-            // (ideally want to store adj list, and iterate for that one node's neighbors, instead of looping thru allEdge each time)
-            for (const auto& edge : allEdges) {
-                if (edge.first == currentNode && nodeColors[edge.second] != -1) {
-                    usedColors.insert(nodeColors[edge.second]);
-                }
-                if (edge.second == currentNode && nodeColors[edge.first] != -1) {
-                    usedColors.insert(nodeColors[edge.first]);
+            // improved so now only takes ~0.54 sec to run 5000 v / 2.5mil edges
+            for (int neighbor : adjList[currentNode]) {
+                if (nodeColors[neighbor] != -1) {
+                    usedColors.insert(nodeColors[neighbor]);
                 }
             }
 

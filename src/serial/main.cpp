@@ -64,8 +64,8 @@ int main(int argc, char* argv[]) {
     int numNodes = std::atoi(argv[1]); // Example: 10 nodes
     int numEdges = std::atoi(argv[2]); // Example: 15 edges
 
-    if (numEdges > (numNodes - 1) * numNodes) {
-        std::cerr << "Invalid arguments. The number of edges must be less than or equal to numNodes * (numNodes - 1)" << std::endl;
+    if (numEdges > ((numNodes - 1) * numNodes) / 2) {
+        std::cerr << "Invalid arguments. The number of edges must be less than or equal to numNodes * (numNodes - 1) / 2" << std::endl;
         return 1;
     }
 
@@ -88,13 +88,17 @@ int main(int argc, char* argv[]) {
         graph = std::make_unique<InterferenceGraph>(numNodes, numEdges);
         std::cout << "Error no mode specified, defaulting to InterferenceGraph that does not have any coloring" << std::endl;
     }
-    // graph.printGraph();
-    graph->generateGraph();
 
     // TIMER instantiation - use this to do timing of program
     Timer programTimer;
     programTimer.reset();
 
+    graph->generateGraph();
+    std::cout << "Elapsed time for generating graph: " << programTimer.elapsed() << " seconds\n";
+
+    //graph->printGraph();
+
+    programTimer.reset();
     // run the program here...
     graph->greedyColoring();  // Apply greedy coloring
 
@@ -106,7 +110,7 @@ int main(int argc, char* argv[]) {
     }
     std::cout << i << std::endl; */
 
-    std::cout << "Elapsed time: " << programTimer.elapsed() << " seconds\n";
+    std::cout << "Elapsed time for graph coloring: " << programTimer.elapsed() << " seconds\n";
 
     std::cout << "Colors used: " << graph->countUniqueColors() << " colors\n";
 
