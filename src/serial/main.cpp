@@ -13,6 +13,7 @@
 #include "../timer.h"
 #include <cstring>
 #include "sequential.cpp"
+#include "openmp-v1.cpp"
 #include <memory>
 
 
@@ -80,6 +81,7 @@ int main(int argc, char* argv[]) {
     }
     else if (mode == "OpenMP") {
         // WIP
+        graph = std::make_unique<openmpV1ColorGraph>(numNodes, numEdges);
     }
     else if (mode == "OpenMPI") {
         // WIP
