@@ -7,6 +7,13 @@ by Kevin Huang and Rex Kim
 ### Summary
 We are going to implement various parallelizations of graph-coloring on larger scale graphs, where graph-coloring is most oftentimes used in register allocation algorithms in the compiler pipeline on multi-core CPU platforms. In parallelizing graph-coloring on larger scale graphs, we will perform a detailed analysis comparing our performance to a sequential baseline implementation. We will try to parallelize across MCS, Greedy Coloring utilizing OpenMP and OpenMPI.
 
+### How To Use Program
+In order to compile this, run ```make``` in the project directory (where Makefile located), then run with
+```
+./serial <numNodes> <numEdges> -[desired mode]
+```
+where replace ```<numNodes>``` and ```<numEdges>``` with integers representing the number of nodes and edges, respectively. The ```[desired mode]``` should be replaced with the specific mode you want to operate in, as of now using the ```-seq``` flag.
+
 ### Maximum Cardinality Search (MCS)
 Maximum cardinality search is typically done in accordance with the following pseudocode.
 source: https://www.cs.cmu.edu/~janh/courses/411/24/lectures/03-regalloc.pdf
