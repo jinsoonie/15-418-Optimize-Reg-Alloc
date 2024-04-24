@@ -53,4 +53,3 @@ std::vector<int> InterferenceGraph::maximumCardinalitySearch() const {
     /* TODO: Implement MCS */
     return ordering;
 }
-
