@@ -51,17 +51,6 @@ void InterferenceGraph::printGraph() {
     }
 }
 
-std::vector<int> InterferenceGraph::maximumCardinalitySearch() const {
-    std::vector<int> ordering(numNodes, 0);
-    std::vector<int> weights(numNodes, 0);
-    std::vector<bool> removed(numNodes, false);
-
-    /* TODO: Implement MCS */
-    return ordering;
-}
-<<<<<<< HEAD:src/graph.cpp
-=======
-
 // ADDED verifyColoring (check that graph coloring is indeed valid)
 bool InterferenceGraph::verifyColoring() const {
     // First check if all nodes are colored
@@ -108,4 +97,8 @@ int InterferenceGraph::countUniqueColors() const {
 void InterferenceGraph::greedyColoring() {
     std::cout << "From greedyColoring(): Default greedyColoring for InterferenceGraph should do nothing\n";
 }
->>>>>>> c2df060f16f5f1b76fae6bae0171bf1f59ce7cb9:src/serial/graph.cpp
+
+// ADDED: Maximum Cardinality Search for graph class (each child
+void InterferenceGraph::maximumCardinalitySearch() {
+    std::cout << "From maximumCardinalitySearch(): Default MCS for InterferenceGraph should do nothing\n";
+}

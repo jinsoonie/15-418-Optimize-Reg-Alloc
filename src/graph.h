@@ -16,21 +16,23 @@ public:
     InterferenceGraph(int nodes, int edges);
     void generateGraph();
     void printGraph();
-    std::vector<int> maximumCardinalitySearch() const;
     // ADDED
     bool verifyColoring() const;
     int countUniqueColors() const;
+    virtual void maximumCardinalitySearch(); // virtual bc will be overridden by children
     virtual void greedyColoring();  // virtual bc will be overridden by children
-    virtual ~InterferenceGraph() {} // virtual destructor or else undef behavior when children access
+    virtual ~InterferenceGraph() {}; // virtual destructor or else undef behavior when children access
 
     // changed to protected so children classes can access and change nodeColors
 protected:
     int numNodes;
     int numEdges;
+    int numColors;
     // ADDED
     std::vector< std::pair<int, int> > allEdges; // Vector to store edges as pairs
     std::vector<int> nodeColors;                 // Colors assigned to each node
     std::vector<std::vector<int>> adjList;
+    std::vector<int> ordering;
 
 };
 

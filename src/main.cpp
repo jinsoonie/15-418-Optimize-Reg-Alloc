@@ -10,7 +10,7 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "../timer.h"
+#include "timer.h"
 #include <cstring>
 #include "sequential.cpp"
 #include "openmp-v1.cpp"
@@ -91,6 +91,8 @@ int main(int argc, char* argv[]) {
         std::cout << "Error no mode specified, defaulting to InterferenceGraph that does not have any coloring" << std::endl;
     }
 
+    
+
     // TIMER instantiation - use this to do timing of program
     Timer programTimer;
     programTimer.reset();
@@ -99,18 +101,15 @@ int main(int argc, char* argv[]) {
     std::cout << "Elapsed time for generating graph: " << programTimer.elapsed() << " seconds\n";
 
     //graph->printGraph();
+    programTimer.reset();
+    // run the program here...
+    graph->maximumCardinalitySearch();  // Apply MCS
+    std::cout << "Elapsed time for MCS: " << programTimer.elapsed() << " seconds\n";
 
     programTimer.reset();
     // run the program here...
     graph->greedyColoring();  // Apply greedy coloring
 
-
-    /* dummy program to test timer
-    long long i;
-    for (i = 0; i < 100000000; i++) {
-        int x = i * i;
-    }
-    std::cout << i << std::endl; */
 
     std::cout << "Elapsed time for graph coloring: " << programTimer.elapsed() << " seconds\n";
 

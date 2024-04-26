@@ -1,21 +1,18 @@
-CXX=clang++
+CXX=g++-13
+CXXFLAGS=-Wall -g -std=c++17 -fopenmp
+LDFLAGS=-fopenmp
 
-CXXFLAGS=-Wall -g -std=c++17
+MAIN=regalloc
 
-MAIN=serial
-
-SRCS=graph.cpp main.cpp
-
-HEADERS=color.h graph.h mcs.h
-
+SRCS=graph.cpp openmp-v1.cpp sequential.cpp main.cpp
+HEADERS=color.h graph.h mcs.h timer.h
 OBJS=$(SRCS:.cpp=.o)
 
 $(MAIN): $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(MAIN) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(MAIN) $(OBJS) $(LDFLAGS)
 
 %.o: %.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS) $(MAIN)
-
