@@ -1,16 +1,20 @@
 /***
  *
- * Sequential Coloring Version using Greedy Algorithm, uses InterferenceGraph class
+ * OpenMP Coloring Version 2 using Greedy Algorithm, uses InterferenceGraph class
+ * vs. Version 1: (ROUGHLY x6.7 FASTER, BUT USES x1.6 COLORS)
+ * on a 5000 node, 2500000 edge random generated, ~0.08s / ~315 colors
  *
  * ***/
-
 #include "graph.h"
 #include <iostream>
 #include <cstdlib>
 #include <set>
+#include <omp.h>
+#include <vector>
+#include <set>
 #include <unordered_map>
 
-class seqColorGraph : public InterferenceGraph {
+class openmpV2ColorGraph : public InterferenceGraph {
 public:
     // child class of InterferenceGraph, use same constructor 
     using InterferenceGraph::InterferenceGraph;
@@ -59,15 +63,15 @@ public:
         // for (int node : ordering) {
         //     std::cout << node << " ";
         // }
-        // std::cout << std::endl;
+        // std::cout << std::endl; //
     }
 
     void greedyColoring() {
-        // Now based on the ordering, we can start coloring the graph
-        // While the ordering is not empty, we will color the nodes
-        while (!ordering.empty()) {
-            int currentNode = ordering.back();
-            ordering.pop_back();
+        // first, color all in parallel (will be race conditions)
+        // access "ordering" in for loop so can use openMP parallel for
+#pragma omp parallel for shared(adjList, nodeColors)
+        for (int i = 0; i < numNodes; i++) {
+            int currentNode = ordering[i];
 
             // Find all colors used by adjacent vertices (neighborhood N(v))
             std::set<int> usedColors;
@@ -87,26 +91,26 @@ public:
             nodeColors[currentNode] = color;
         }
 
-        // // Start coloring each vertex starting from node 0 to numNodes-1
-        // for (int currentNode = 0; currentNode < numNodes; currentNode++) {
-        //     std::set<int> usedColors;
+        // find the current (most likely incorrect) total # of colors
+        int totalColors = 0;
+        for (int i = 0; i < numNodes; i++) {
+            totalColors = std::max(totalColors, nodeColors[i] + 1);
+        }
 
-        //     // Find all colors used by adjacent vertices (neighborhood N(v))
-        //     // improved so now only takes ~0.54 sec to run 5000 v / 2.5mil edges
-        //     for (int neighbor : adjList[currentNode]) {
-        //         if (nodeColors[neighbor] != -1) {
-        //             usedColors.insert(nodeColors[neighbor]);
-        //         }
-        //     }
+        // loop through in parallel, if conflict detected, then resolve by using totalColors+1
+#pragma omp parallel for shared(adjList, nodeColors, totalColors)
+        for (int i = 0; i < numNodes; i++) {
+            int currentNode = ordering[i];
+            int currNodeColor = nodeColors[currentNode];
 
-        //     // Find the lowest unused color in N(v)
-        //     int color = 0;
-        //     while (usedColors.find(color) != usedColors.end()) {
-        //         color++;
-        //     }
-
-        //     // Assign the found color to the current node
-        //     nodeColors[currentNode] = color;
-        // }
+            for (int neighbor : adjList[currentNode]) {
+                // conflict detected, should resolve atomically by using totalColors += 1
+                if (currNodeColor == nodeColors[neighbor]) {
+#pragma omp atomic capture
+                    nodeColors[currentNode] = totalColors++;
+                    break;
+                }
+            }
+        }
     }
 };

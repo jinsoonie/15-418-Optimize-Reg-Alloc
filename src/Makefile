@@ -1,4 +1,5 @@
-CXX=g++-13
+# CXX=g++-13
+CXX=clang++
 CXXFLAGS=-Wall -g -std=c++17 -fopenmp
 LDFLAGS=-fopenmp
 

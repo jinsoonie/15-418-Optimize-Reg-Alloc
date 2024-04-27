@@ -14,6 +14,7 @@
 #include <cstring>
 #include "sequential.cpp"
 #include "openmp-v1.cpp"
+#include "openmp-v2.cpp"
 #include <memory>
 
 
@@ -34,8 +35,13 @@ int main(int argc, char* argv[]) {
             mode = "Sequential";
             modeCount++;
         }
-        else if (strcmp(argv[i], "-openmp") == 0) {
-            mode = "OpenMP";
+        else if (strcmp(argv[i], "-openmpv1") == 0) {
+            mode = "OpenMPv1";
+            modeCount++;
+        }
+        // openMPv2 impl, better than v1? (roughly x10 faster, but x1.5 colors)
+        else if (strcmp(argv[i], "-openmpv2") == 0) {
+            mode = "OpenMPv2";
             modeCount++;
         }
         else if (strcmp(argv[i], "-openmpi") == 0) {
@@ -79,9 +85,13 @@ int main(int argc, char* argv[]) {
     if (mode == "Sequential") {
         graph = std::make_unique<seqColorGraph>(numNodes, numEdges);
     }
-    else if (mode == "OpenMP") {
+    else if (mode == "OpenMPv1") {
         // WIP
         graph = std::make_unique<openmpV1ColorGraph>(numNodes, numEdges);
+    }
+    // openMPv2 impl, better than v1? (roughly x10 faster, but x1.5 colors)
+    else if (mode == "OpenMPv2") {
+        graph = std::make_unique<openmpV2ColorGraph>(numNodes, numEdges);
     }
     else if (mode == "OpenMPI") {
         // WIP
@@ -91,7 +101,7 @@ int main(int argc, char* argv[]) {
         std::cout << "Error no mode specified, defaulting to InterferenceGraph that does not have any coloring" << std::endl;
     }
 
-    
+
 
     // TIMER instantiation - use this to do timing of program
     Timer programTimer;
