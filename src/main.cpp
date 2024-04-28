@@ -15,6 +15,7 @@
 #include "sequential.cpp"
 #include "openmp-v1.cpp"
 #include "openmp-v2.cpp"
+#include "openmp-v3.cpp"
 #include <memory>
 
 
@@ -39,9 +40,14 @@ int main(int argc, char* argv[]) {
             mode = "OpenMPv1";
             modeCount++;
         }
-        // openMPv2 impl, better than v1? (roughly x10 faster, but x1.5 colors)
+        // openMPv2, better than v1? (roughly x10 faster, but x1.5 colors)
         else if (strcmp(argv[i], "-openmpv2") == 0) {
             mode = "OpenMPv2";
+            modeCount++;
+        }
+        // openMPv3, TESTING MCS PARALLELIZATION
+        else if (strcmp(argv[i], "-openmpv3") == 0) {
+            mode = "OpenMPv3";
             modeCount++;
         }
         else if (strcmp(argv[i], "-openmpi") == 0) {
@@ -71,7 +77,9 @@ int main(int argc, char* argv[]) {
     int numNodes = std::atoi(argv[1]); // Example: 10 nodes
     int numEdges = std::atoi(argv[2]); // Example: 15 edges
 
-    if (numEdges > ((numNodes - 1) * numNodes) / 2) {
+    std::uint64_t testValid = static_cast<std::uint64_t>(numNodes - 1) * numNodes / 2;
+
+    if (numEdges > testValid) {
         std::cerr << "Invalid arguments. The number of edges must be less than or equal to numNodes * (numNodes - 1) / 2" << std::endl;
         return 1;
     }
@@ -89,9 +97,13 @@ int main(int argc, char* argv[]) {
         // WIP
         graph = std::make_unique<openmpV1ColorGraph>(numNodes, numEdges);
     }
-    // openMPv2 impl, better than v1? (roughly x10 faster, but x1.5 colors)
+    // openMPv2, better than v1? (roughly x10 faster, but x1.5 colors)
     else if (mode == "OpenMPv2") {
         graph = std::make_unique<openmpV2ColorGraph>(numNodes, numEdges);
+    }
+    // openMPv3, TESTING MCS PARALLELIZATION
+    else if (mode == "OpenMPv3") {
+        graph = std::make_unique<openmpV3ColorGraph>(numNodes, numEdges);
     }
     else if (mode == "OpenMPI") {
         // WIP
