@@ -21,15 +21,15 @@ public:
     /* This implementation is a serial version of the maximum cardinality search algorithm */
     void maximumCardinalitySearch() {
         // Define the weight hashmap
-        // std::unordered_map<int, int> weights;
+//         std::unordered_map<int, int> weights;
 
-        // // Initialize all weights to 1
-        // for (int i = 0; i < numNodes; i++) {
-        //     weights[i] = 1;
-        // }
+//         // Initialize all weights to 1
+//         for (int i = 0; i < numNodes; i++) {
+//             weights[i] = 1;
+//         }
 
-        // Here we start the search
-        // ** CONSIDER USING A PARALLEL REDUCTION HERE **
+//         Here we start the search
+//         ** CONSIDER USING A PARALLEL REDUCTION HERE **
 //         for (int i = 0; i < numNodes; i++) {
 //             int maxDegree = -1;
 //             int maxNode = -1;
@@ -64,29 +64,28 @@ public:
 
         // VERSION ABOVE WORKS, BUT IS A BIT SLOW
         // TRY PARALLEL REDUCTION VERSION BELOW
-
-        // vector for weights bc unordered_map for pragma parallel for is weird
-        std::vector<int> weights(numNodes, 1);
+        // note: need to use vector for weights as #pragma omp doesn't do maps, use vectors
+        std::vector<int> weights(numNodes, 1); // Weights initialized to 1
+        std::vector<bool> processed(numNodes, false); // Track processed nodes
 
         for (int i = 0; i < numNodes; i++) {
             int maxDegree = -1;
             int maxNode = -1;
 
-            // parallel reduction to find the node with the maximum weight
+            // Parallel reduction to find the node with the maximum weight
 #pragma omp parallel
             {
                 int localMaxDegree = -1;
                 int localMaxNode = -1;
 
-                // each thread finds a local maximum, which is
 #pragma omp for nowait
                 for (int j = 0; j < numNodes; j++) {
-                    if (weights[j] > localMaxDegree) {
+                    if (!processed[j] && weights[j] > localMaxDegree) {
                         localMaxDegree = weights[j];
                         localMaxNode = j;
                     }
                 }
-                // then combined in critical section
+
 #pragma omp critical
                 {
                     if (localMaxDegree > maxDegree) {
@@ -96,18 +95,24 @@ public:
                 }
             }
 
-            // update the weights of all neighbors
+            // sequentially: if no unprocessed node is found, continue
+            if (maxNode == -1) continue;
+
+            // update weights of all neighbors
 #pragma omp parallel for
             for (int neighbor : adjList[maxNode]) {
+                if (!processed[neighbor]) {
 #pragma omp atomic
-                weights[neighbor]++;
+                    weights[neighbor]++;
+                }
             }
 
-            // push the node into the ordering
-            ordering.push_back(maxNode);
+            // mark the node as processed
+            processed[maxNode] = true;
 
-            // Note: Erasing maxNode from weights not necessary since we won't revisit
-            weights[maxNode] = -1;  // Mark this node as used by setting its weight to an invalid state
+            // push the node into the ordering
+#pragma omp critical
+            ordering.push_back(maxNode);
         }
 
 
