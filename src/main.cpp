@@ -16,6 +16,7 @@
 #include "openmp-v1.cpp"
 #include "openmp-v2.cpp"
 #include "openmp-v3.cpp"
+#include "openmp-v4.cpp"
 #include <memory>
 
 
@@ -48,6 +49,11 @@ int main(int argc, char* argv[]) {
         // openMPv3, TESTING MCS PARALLELIZATION
         else if (strcmp(argv[i], "-openmpv3") == 0) {
             mode = "OpenMPv3";
+            modeCount++;
+        }
+        // openMPv4, TESTING Jones-Plassman
+        else if (strcmp(argv[i], "-openmpv4") == 0) {
+            mode = "OpenMPv4";
             modeCount++;
         }
         else if (strcmp(argv[i], "-openmpi") == 0) {
@@ -104,6 +110,10 @@ int main(int argc, char* argv[]) {
     // openMPv3, TESTING MCS PARALLELIZATION
     else if (mode == "OpenMPv3") {
         graph = std::make_unique<openmpV3ColorGraph>(numNodes, numEdges);
+    }
+    // openMPv4, TESTING Jones-Plassman
+    else if (mode == "OpenMPv4") {
+        graph = std::make_unique<openmpV4ColorGraph>(numNodes, numEdges);
     }
     else if (mode == "OpenMPI") {
         // WIP
