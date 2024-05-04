@@ -34,6 +34,7 @@ for mode in execution_modes:
     for n_threads in num_threads:
         for case in cases:
             command = ['./regalloc', str(case[0]), str(case[1]), str(n_threads), mode]
+            print(command)
             elapsed_mcs, elapsed_coloring, colors_used = run_command(command)
             results.append({
                 'Test Case': f'{case[0]} {case[1]}',
