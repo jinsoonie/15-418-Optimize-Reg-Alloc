@@ -67,6 +67,8 @@ public:
     }
 
     void greedyColoring() {
+        omp_set_num_threads(numThreads);  // Set the number of threads
+
         // first, color all in parallel (will be race conditions)
         // access "ordering" in for loop so can use openMP parallel for
 #pragma omp parallel for shared(adjList, nodeColors)

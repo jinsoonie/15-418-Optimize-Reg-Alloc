@@ -20,8 +20,8 @@ public:
     /* This implementation is a serial version of the maximum cardinality search algorithm */
     void maximumCardinalitySearch() {
         // Define the weight hashmap
-        std::unordered_map<int, int> weights;   
-        
+        std::unordered_map<int, int> weights;
+
         // Initialize all weights to 1
         for (int i = 0; i < numNodes; i++) {
             weights[i] = 1;
@@ -57,24 +57,26 @@ public:
         }
 
         // print the ordering
-        std::cout << "Ordering: ";
-        for (int node : ordering) {
-            std::cout << node << " ";
-        }
-        std::cout << std::endl;
+        // std::cout << "Ordering: ";
+        // for (int node : ordering) {
+        //     std::cout << node << " ";
+        // }
+        // std::cout << std::endl; //
     }
 
     void greedyColoring() {
+        omp_set_num_threads(numThreads);  // Set the number of threads
+
         // Parallelizing the loop might not be straightforward because each iteration is not independent
         for (int currentNode = 0; currentNode < numNodes; currentNode++) {
             std::set<int> usedColors;
 
             // Collect used colors in parallel
-            #pragma omp parallel
+#pragma omp parallel
             {
                 std::set<int> localUsedColors;
 
-                #pragma omp for nowait // nowait allows to skip the implicit barrier at the end of the for
+#pragma omp for nowait // nowait allows to skip the implicit barrier at the end of the for
                 for (int i = 0; i < adjList[currentNode].size(); i++) {
                     int neighbor = adjList[currentNode][i];
                     if (nodeColors[neighbor] != -1) {
@@ -83,7 +85,7 @@ public:
                 }
 
                 // Critical section to merge local sets into the global set
-                #pragma omp critical
+#pragma omp critical
                 {
                     usedColors.insert(localUsedColors.begin(), localUsedColors.end());
                 }
@@ -101,6 +103,6 @@ public:
         }
     }
 
-    
+
 
 };

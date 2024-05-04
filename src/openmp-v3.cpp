@@ -18,8 +18,9 @@ public:
     // child class of InterferenceGraph, use same constructor 
     using InterferenceGraph::InterferenceGraph;
 
-    /* This implementation is a serial version of the maximum cardinality search algorithm */
     void maximumCardinalitySearch() {
+        omp_set_num_threads(numThreads);  // Set the number of threads
+
         // Define the weight hashmap
 //         std::unordered_map<int, int> weights;
 

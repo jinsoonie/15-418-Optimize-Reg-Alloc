@@ -22,8 +22,8 @@
 
 int main(int argc, char* argv[]) {
     // Check for correct number of args
-    if (argc != 4) {
-        std::cerr << "Usage: " << argv[0] << " <numNodes> <numEdges> -[desired mode]" << std::endl;
+    if (argc != 5) {
+        std::cerr << "Usage: " << argv[0] << " <numNodes> <numEdges> <numThreads> -[desired mode]" << std::endl;
         return 1;
     }
 
@@ -74,16 +74,20 @@ int main(int argc, char* argv[]) {
     /** END ADDED **/
 
     // Check for valid arguments
-    if (std::atoi(argv[1]) <= 0 || std::atoi(argv[2]) <= 0) {
-        std::cerr << "Invalid arguments. Please enter positive integers for numNodes and numEdges." << std::endl;
+    if (std::atoi(argv[1]) <= 0 || std::atoi(argv[2]) <= 0 || std::atoi(argv[3]) <= 0) {
+        std::cerr << "Invalid arguments. Please enter positive integers for numNodes and numEdges and numThreads." << std::endl;
         return 1;
     }
 
     // Parse command line arguments
     int numNodes = std::atoi(argv[1]); // Example: 10 nodes
     int numEdges = std::atoi(argv[2]); // Example: 15 edges
+    int numThreads = std::atoi(argv[3]); // Example: 8 threads
 
     std::uint64_t testValid = static_cast<std::uint64_t>(numNodes - 1) * numNodes / 2;
+
+    // Output the # of threads specified, if valid
+    std::cout << "# of threads: " << numThreads << std::endl;
 
     if (numEdges > testValid) {
         std::cerr << "Invalid arguments. The number of edges must be less than or equal to numNodes * (numNodes - 1) / 2" << std::endl;
@@ -97,29 +101,26 @@ int main(int argc, char* argv[]) {
     std::unique_ptr<InterferenceGraph> graph;
 
     if (mode == "Sequential") {
-        graph = std::make_unique<seqColorGraph>(numNodes, numEdges);
+        graph = std::make_unique<seqColorGraph>(numNodes, numEdges, numThreads);
     }
     else if (mode == "OpenMPv1") {
         // WIP
-        graph = std::make_unique<openmpV1ColorGraph>(numNodes, numEdges);
+        graph = std::make_unique<openmpV1ColorGraph>(numNodes, numEdges, numThreads);
     }
     // openMPv2, better than v1? (roughly x10 faster, but x1.5 colors)
     else if (mode == "OpenMPv2") {
-        graph = std::make_unique<openmpV2ColorGraph>(numNodes, numEdges);
+        graph = std::make_unique<openmpV2ColorGraph>(numNodes, numEdges, numThreads);
     }
     // openMPv3, TESTING MCS PARALLELIZATION
     else if (mode == "OpenMPv3") {
-        graph = std::make_unique<openmpV3ColorGraph>(numNodes, numEdges);
+        graph = std::make_unique<openmpV3ColorGraph>(numNodes, numEdges, numThreads);
     }
     // openMPv4, TESTING Jones-Plassman
     else if (mode == "OpenMPv4") {
-        graph = std::make_unique<openmpV4ColorGraph>(numNodes, numEdges);
-    }
-    else if (mode == "OpenMPI") {
-        // WIP
+        graph = std::make_unique<openmpV4ColorGraph>(numNodes, numEdges, numThreads);
     }
     else {
-        graph = std::make_unique<InterferenceGraph>(numNodes, numEdges);
+        graph = std::make_unique<InterferenceGraph>(numNodes, numEdges, numThreads);
         std::cout << "Error no mode specified, defaulting to InterferenceGraph that does not have any coloring" << std::endl;
     }
 

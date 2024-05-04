@@ -69,6 +69,8 @@ public:
     // JONES-PLASSMAN (parallel) - slower than openMPV1 but has better coloring quality
     // refer to https://users.cs.utah.edu/~hari/teaching/bigdata/06_Randomized_Algorithms.pdf
     void greedyColoring() {
+        omp_set_num_threads(numThreads);  // Set the number of threads
+
         // vector to show how many nodes remaining
         std::vector<bool> remaining(numNodes, true);
 

@@ -13,7 +13,7 @@
 
 class InterferenceGraph {
 public:
-    InterferenceGraph(int nodes, int edges);
+    InterferenceGraph(int nodes, int edges, int threads);
     void generateGraph();
     void printGraph();
     // ADDED
@@ -28,6 +28,7 @@ protected:
     int numNodes;
     int numEdges;
     int numColors;
+    int numThreads;
     // ADDED
     std::vector< std::pair<int, int> > allEdges; // Vector to store edges as pairs
     std::vector<int> nodeColors;                 // Colors assigned to each node

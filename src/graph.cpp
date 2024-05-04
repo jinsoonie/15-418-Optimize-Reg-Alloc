@@ -12,9 +12,11 @@
 #include <ctime>
 #include <set>
 #include <algorithm>
+#include <omp.h>
+#include <memory>
 
 // added nodeColors to InterferenceGraph
-InterferenceGraph::InterferenceGraph(int nodes, int edges) : numNodes(nodes), numEdges(edges), nodeColors(nodes, -1), adjList(nodes) {
+InterferenceGraph::InterferenceGraph(int nodes, int edges, int threads) : numNodes(nodes), numEdges(edges), numThreads(threads), nodeColors(nodes, -1), adjList(nodes) {
     // generate a random seed
     srand(static_cast<unsigned int>(time(nullptr)));
 }
