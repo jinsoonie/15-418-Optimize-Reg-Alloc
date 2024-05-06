@@ -2,17 +2,19 @@ Project Proposal: https://docs.google.com/document/d/1V1c7jPHFIxEf27Ooir0F8c-dJi
 
 Project Milestone: https://docs.google.com/document/d/1B60vDWCO8wZI-mO-EAs_pwEtlz6zeIRzjabUGWgG1vU/edit?usp=sharing
 
+Project Final Report: https://docs.google.com/document/d/1AR2Kv9zSvtrtwJsAxwBiux6nWB_tj4l4Pv1cd3EWw5Q/edit?usp=sharing
+
 # Parallelization of Large Scale Graph Coloring
 by Kevin Huang and Rex Kim
 ### Summary
-We are going to implement various parallelizations of graph-coloring on larger scale graphs, where graph-coloring is most oftentimes used in register allocation algorithms in the compiler pipeline on multi-core CPU platforms. In parallelizing graph-coloring on larger scale graphs, we will perform a detailed analysis comparing our performance to a sequential baseline implementation. We will try to parallelize across MCS, Greedy Coloring utilizing OpenMP and OpenMPI.
+We are going to implement various parallelizations of graph-coloring on larger scale graphs, where graph-coloring is most oftentimes used in register allocation algorithms in the compiler pipeline on multi-core CPU platforms. In parallelizing graph-coloring on larger scale graphs, we will perform a detailed analysis comparing our performance to a sequential baseline implementation. We will try to parallelize across MCS, Greedy Coloring utilizing OpenMP.
 
 ### How To Use Program
-In order to compile this, run ```make``` in the project directory (where Makefile located), then run with
+In order to compile this, run ```make clean``` and then ```make``` in the project directory (where Makefile located), then run with
 ```
-./serial <numNodes> <numEdges> -[desired mode]
+./regalloc <numNodes> <numEdges> <numThreads> -[desired mode]
 ```
-where replace ```<numNodes>``` and ```<numEdges>``` with integers representing the number of nodes and edges, respectively. The ```[desired mode]``` should be replaced with the specific mode you want to operate in, as of now using the ```-seq``` flag.
+where replace ```<numNodes>```, ```<numEdges>```, ```<numThreads>``` with integers representing the number of nodes, edges, and threads respectively. The ```[desired mode]``` should be replaced with the specific mode you want to operate in, chosen from ```-seq```, ```-openmpv1```, ```-openmpv2```, ```-openmpv3```, or ```-openmpv4``` flag.
 
 ### Maximum Cardinality Search (MCS)
 Maximum cardinality search is typically done in accordance with the following pseudocode.
@@ -66,19 +68,3 @@ There are several interesting challenges associated with our project.
 
 ###### Contention when parallelizing MCS
 * When searching for vertices with the largest weight while parallelizing MCS, if multiple threads want to update at the same time, contention issues arise. Locks may be a viable option to reduce such contention.
-
-### Schedule (as of Milestone Report)
-#### 4.16.2024 - 4.21.2024
-Parallel implementation for MCS using OpenMP
-
-#### 4.22.2024 - 4.24.2024
-Parallel implementation for MCS using OpenMPI
-
-#### 4.25.2024 - 4.28.2024
-Parallel implementation for Greedy Coloring using OpenMP
-
-#### 4.29.2024 - 5.01.2024
-Parallel implementation for Greedy Coloring using OpenMPI
-
-#### 5.01.2024 - 5.05.2024
-Fine tune (if necessary), compose final report and poster
